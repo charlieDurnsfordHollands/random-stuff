@@ -170,7 +170,7 @@ def random_forum_generator():
 
     @tasks.loop(time=datetime.time(hour=5, tzinfo=datetime.timezone.utc))
     async def my_daily_task():
-        if datetime.datetime.now().weekday() != 0:
+        if datetime.datetime.now().weekday() == 0:
             with open("data.csv", "r", newline='') as csvfile_read:
                 reader = csv.reader(csvfile_read, delimiter=",")
                 data = sum([row for row in reader], [])
