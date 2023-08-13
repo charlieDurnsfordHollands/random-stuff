@@ -12,5 +12,5 @@ Running the script:
 ```
 $ cd ../random_forum_generator
 $ pip install -r requirements.txt
-$ python3 random_forum_generator.py
+$ python random_forum_generator.py
 ```
