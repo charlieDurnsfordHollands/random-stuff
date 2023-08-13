@@ -128,8 +128,10 @@ def list_prompts():
     with open("data.csv", "r", newline='') as csvfile_read:
         reader = csv.reader(csvfile_read, delimiter=",")
         data = [row for row in reader]
-
-    return "```" + "\n".join(sum(data, [])) + "```"
+        if data:
+            return "```" + "\n".join(sum(data, [])) + "```"
+        else:
+            return "```No prompts```"
 
 
 def clear_prompts():
