@@ -10,7 +10,7 @@ discord: 2.3.2
 ## Setup
 Running the script:
 ```
-$ cd ../jsm_metric_collection
+$ cd ../random_forum_generator
 $ pip install -r requirements.txt
 $ python3 random_forum_generator.py
 ```
