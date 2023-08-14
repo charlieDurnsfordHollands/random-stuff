@@ -32,6 +32,20 @@ def parse_args(inp_args):
         help="The token of the discord bot",
         required=True,
     )
+    parser.add_argument(
+        "-p",
+        "--ping",
+        metavar="PING",
+        help="The id of the role to ping",
+        required=True,
+    )
+    parser.add_argument(
+        "-f",
+        "--fire",
+        metavar="FIRE",
+        help="Create a test thread",
+        default=False,
+    )
     args = parser.parse_args(inp_args)
     return args
 
@@ -140,11 +154,23 @@ def clear_prompts():
     return "```Prompts list cleared```"
 
 
+def get_random_prompt():
+    with open("data.csv", "r", newline='') as csvfile_read:
+        reader = csv.reader(csvfile_read, delimiter=",")
+        data = sum([row for row in reader], [])
+    if data:
+        return random.choice(data)
+    else:
+        print("No Prompts to create a thread from")
+
+
 def random_forum_generator():
     args = parse_args(argv[1:])
     role_name = args.role
     channel_id = args.channel
     token = args.token
+    ping_id = args.ping
+    fire = args.fire
 
     intents = Intents.default()
     intents.message_content = True
@@ -157,6 +183,13 @@ def random_forum_generator():
     async def on_ready():
         print(f'{client.user} is now running.')
         my_daily_task.start()
+        if fire:
+            channel = client.get_channel(int(channel_id))
+            await channel.create_thread(
+                name=f"Weekly Art Together Activity: "
+                     f"{datetime.datetime.now(tz=datetime.timezone.utc).strftime('%Y-%m-%d')}",
+                content=f"<@&{ping_id}> ```This weeks prompt is: \"{random.choice(get_random_prompt())}\"```",
+            )
 
     @client.event
     async def on_message(message):
@@ -173,18 +206,12 @@ def random_forum_generator():
     @tasks.loop(time=datetime.time(hour=5, tzinfo=datetime.timezone.utc))
     async def my_daily_task():
         if datetime.datetime.now().weekday() == 0:
-            with open("data.csv", "r", newline='') as csvfile_read:
-                reader = csv.reader(csvfile_read, delimiter=",")
-                data = sum([row for row in reader], [])
-            if data:
-                channel = client.get_channel(int(channel_id))
-                await channel.create_thread(
-                    name=f"Weekly Art Together Activity: "
-                         f"{datetime.datetime.now(tz=datetime.timezone.utc).strftime('%Y-%m-%d')}",
-                    content=f"```This weeks prompt is: \"{random.choice(data)}\"```",
-                )
-            else:
-                print("No Prompts to create a thread from")
+            channel = client.get_channel(int(channel_id))
+            await channel.create_thread(
+                name=f"Weekly Art Together Activity: "
+                     f"{datetime.datetime.now(tz=datetime.timezone.utc).strftime('%Y-%m-%d')}",
+                content=f"```<@&{ping_id}> This weeks prompt is: \"{random.choice(get_random_prompt())}\"```",
+            )
 
     client.run(token)
 
