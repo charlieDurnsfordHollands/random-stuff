@@ -210,7 +210,7 @@ def random_forum_generator():
             await channel.create_thread(
                 name=f"Weekly Art Together Activity: "
                      f"{datetime.datetime.now(tz=datetime.timezone.utc).strftime('%Y-%m-%d')}",
-                content=f"```<@&{ping_id}> This weeks prompt is: \"{random.choice(get_random_prompt())}\"```",
+                content=f"<@&{ping_id}> ```This weeks prompt is: \"{random.choice(get_random_prompt())}\"```",
             )
 
     client.run(token)
