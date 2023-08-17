@@ -182,8 +182,9 @@ def random_forum_generator():
     @client.event
     async def on_ready():
         print(f'{client.user} is now running.')
-        my_daily_task.start()
-        if fire:
+        if not fire:
+            my_daily_task.start()
+        else:
             channel = client.get_channel(int(channel_id))
             await channel.create_thread(
                 name=f"Weekly Art Together Activity: "
